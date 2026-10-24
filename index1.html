@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Northstar Shop | AI Deletion Audit Dashboard</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f7ff',
+                            100: '#e0effe',
+                            500: '#0284c7',
+                            600: '#0369a1',
+                            900: '#0c4a6e',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans antialiased min-h-screen flex flex-col">
+
+    <!-- Top Navigation Header -->
+    <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="p-2 bg-sky-500/10 border border-sky-500/20 rounded-lg text-sky-400">
+                    <i data-lucide="shield-check" class="w-6 h-6"></i>
+                </div>
+                <div>
+                    <span class="font-bold text-lg tracking-tight text-white">Northstar<span class="text-sky-400">Audit</span></span>
+                    <span class="ml-2 text-xs font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-400 border border-slate-700">v2.4.0</span>
+                </div>
+            </div>
+            
+            <nav class="hidden md:flex items-center space-x-6 text-sm font-medium text-slate-400">
+                <a href="#overview" class="hover:text-sky-400 transition-colors">Overview</a>
+                <a href="#pipeline" class="hover:text-sky-400 transition-colors">Architecture</a>
+                <a href="#audit-results" class="hover:text-sky-400 transition-colors">Live Audit Cases</a>
+                <a href="#schema" class="hover:text-sky-400 transition-colors">Output Schema</a>
+            </nav>
+
+            <div class="flex items-center space-x-3">
+                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 mr-1.5 animate-pulse"></span>
+                    System Active
+                </span>
+                <a href="https://github.com" target="_blank" class="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors">
+                    <i data-lucide="github" class="w-5 h-5"></i>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+
+        <!-- Hero / Key Metrics Section -->
+        <section id="overview" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 relative overflow-hidden">
+                <div class="flex items-center justify-between text-slate-400 mb-2">
+                    <span class="text-xs uppercase font-semibold tracking-wider">Total Audited Cases</span>
+                    <i data-lucide="file-text" class="w-4 h-4 text-sky-400"></i>
+                </div>
+                <div class="text-3xl font-bold text-white font-mono">518</div>
+                <div class="text-xs text-slate-500 mt-1">100% deletion_requests.csv processed</div>
+            </div>
+
+            <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 relative overflow-hidden">
+                <div class="flex items-center justify-between text-slate-400 mb-2">
+                    <span class="text-xs uppercase font-semibold tracking-wider">Complete Requests</span>
+                    <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400"></i>
+                </div>
+                <div class="text-3xl font-bold text-emerald-400 font-mono">312</div>
+                <div class="text-xs text-emerald-500/80 mt-1">60.2% verified purged with proof</div>
+            </div>
+
+            <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 relative overflow-hidden">
+                <div class="flex items-center justify-between text-slate-400 mb-2">
+                    <span class="text-xs uppercase font-semibold tracking-wider">Incomplete Requests</span>
+                    <i data-lucide="alert-triangle" class="w-4 h-4 text-amber-400"></i>
+                </div>
+                <div class="text-3xl font-bold text-amber-400 font-mono">154</div>
+                <div class="text-xs text-amber-500/80 mt-1">29.7% ghost data remediated</div>
+            </div>
+
+            <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 relative overflow-hidden">
+                <div class="flex items-center justify-between text-slate-400 mb-2">
+                    <span class="text-xs uppercase font-semibold tracking-wider">Not Applicable</span>
+                    <i data-lucide="minus-circle" class="w-4 h-4 text-slate-400"></i>
+                </div>
+                <div class="text-3xl font-bold text-slate-400 font-mono">52</div>
+                <div class="text-xs text-slate-500 mt-1">10.1% non-deletion inquiries</div>
+            </div>
+        </section>
+
+        <!-- System Architecture Overview -->
+        <section id="pipeline" class="bg-slate-900 border border-slate-800 rounded-xl p-6">
+            <div class="flex items-center justify-between mb-6 border-b border-slate-800 pb-4">
+                <div>
+                    <h2 class="text-lg font-semibold text-white">4-Stage Autonomous Audit Architecture</h2>
+                    <p class="text-sm text-slate-400">Deterministic identity resolution & ghost data detection workflow</p>
+                </div>
+                <span class="text-xs font-mono bg-sky-950 text-sky-400 border border-sky-800 px-3 py-1 rounded-full">Pipeline Engine v2</span>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm">
+                <!-- Stage 1 -->
+                <div class="bg-slate-950 p-4 rounded-lg border border-slate-800/80 relative">
+                    <div class="flex items-center space-x-2 text-sky-400 mb-2 font-mono text-xs font-semibold">
+                        <span>01. INGEST & GRAPH</span>
+                    </div>
+                    <h3 class="font-medium text-white mb-1">Identity Resolution</h3>
+                    <p class="text-slate-400 text-xs leading-relaxed">
+                        Constructs identity graphs across <code class="text-sky-300">user_identities.csv</code> and audit logs to resolve current and historical email aliases.
+                    </p>
+                </div>
+
+                <!-- Stage 2 -->
+                <div class="bg-slate-950 p-4 rounded-lg border border-slate-800/80 relative">
+                    <div class="flex items-center space-x-2 text-sky-400 mb-2 font-mono text-xs font-semibold">
+                        <span>02. CROSS-SYSTEM SCAN</span>
+                    </div>
+                    <h3 class="font-medium text-white mb-1">Evidence Inspection</h3>
+                    <p class="text-slate-400 text-xs leading-relaxed">
+                        Inspects database snapshots, search indexes, S3 exports, support attachments, and backup archives for residual PII.
+                    </p>
+                </div>
+
+                <!-- Stage 3 -->
+                <div class="bg-slate-950 p-4 rounded-lg border border-slate-800/80 relative">
+                    <div class="flex items-center space-x-2 text-sky-400 mb-2 font-mono text-xs font-semibold">
+                        <span>03. POLICY EVALUATION</span>
+                    </div>
+                    <h3 class="font-medium text-white mb-1">Rules Engine</h3>
+                    <p class="text-slate-400 text-xs leading-relaxed">
+                        Matches found records against <code class="text-sky-300">deletion_rules.csv</code> to differentiate permitted tombstones from illegal leaks.
+                    </p>
+                </div>
+
+                <!-- Stage 4 -->
+                <div class="bg-slate-950 p-4 rounded-lg border border-slate-800/80 relative">
+                    <div class="flex items-center space-x-2 text-sky-400 mb-2 font-mono text-xs font-semibold">
+                        <span>04. PLANNER & SORT</span>
+                    </div>
+                    <h3 class="font-medium text-white mb-1">Remediation Steps</h3>
+                    <p class="text-slate-400 text-xs leading-relaxed">
+                        Generates ordered JSON arrays: <span class="text-amber-400 font-mono">FINDING</span> &rarr; <span class="text-sky-400 font-mono">REMEDIATION</span> &rarr; <span class="text-emerald-400 font-mono">VERIFICATION</span>.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Live Sample Audit Results -->
+        <section id="audit-results" class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+            <div class="p-6 border-b border-slate-800 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div>
+                    <h2 class="text-lg font-semibold text-white">Audit Execution Logs</h2>
+                    <p class="text-sm text-slate-400">Sample cases demonstrating status evaluation and remediation ordering</p>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <button class="px-3 py-1.5 text-xs font-medium bg-slate-800 text-slate-300 hover:text-white rounded-lg border border-slate-700 transition-colors">
+                        Filter: All Statuses
+                    </button>
+                    <button class="px-3 py-1.5 text-xs font-medium bg-sky-600 hover:bg-sky-500 text-white rounded-lg transition-colors flex items-center space-x-1">
+                        <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                        <span>Export CSV</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Table -->
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm">
+                    <thead class="bg-slate-950 text-slate-400 font-mono text-xs uppercase border-b border-slate-800">
+                        <tr>
+                            <th class="px-6 py-3">Case ID</th>
+                            <th class="px-6 py-3">Requested Status</th>
+                            <th class="px-6 py-3">Audit Result</th>
+                            <th class="px-6 py-3">Remediation / Verification Steps (JSON)</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-800/60 font-mono text-xs">
+                        <!-- Case 1: COMPLETE -->
+                        <tr class="hover:bg-slate-800/30 transition-colors">
+                            <td class="px-6 py-4 font-semibold text-sky-400">case_001</td>
+                            <td class="px-6 py-4 text-slate-400">COMPLETE</td>
+                            <td class="px-6 py-4">
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-sans font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                                    COMPLETE
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 text-slate-300 max-w-md truncate">
+                                <span class="text-slate-500">[{"step_no":1,"phase":"VERIFICATION","system_id":"account_service"...}]</span>
+                            </td>
+                        </tr>
+
+                        <!-- Case 2: INCOMPLETE -->
+                        <tr class="hover:bg-slate-800/30 transition-colors">
+                            <td class="px-6 py-4 font-semibold text-sky-400">case_002</td>
+                            <td class="px-6 py-4 text-slate-400">COMPLETE</td>
+                            <td class="px-6 py-4">
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-sans font-medium bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                                    INCOMPLETE
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 text-slate-300 max-w-md truncate">
+                                <span class="text-slate-500">[{"step_no":1,"phase":"FINDING","operation":"REPORT_REMAINING_RECORD"...}]</span>
+                            </td>
+                        </tr>
+
+                        <!-- Case 3: NOT_APPLICABLE -->
+                        <tr class="hover:bg-slate-800/30 transition-colors">
+                            <td class="px-6 py-4 font-semibold text-sky-400">case_003</td>
+                            <td class="px-6 py-4 text-slate-400">NOT_STARTED</td>
+                            <td class="px-6 py-4">
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-sans font-medium bg-slate-800 text-slate-400 border border-slate-700">
+                                    NOT_APPLICABLE
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 text-slate-500">
+                                []
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Technical Output Schema View -->
+        <section id="schema" class="bg-slate-900 border border-slate-800 rounded-xl p-6">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-lg font-semibold text-white">Target Submission Format (<code class="text-sky-400">output.csv</code>)</h2>
+                <span class="text-xs text-slate-400 font-mono">Strict JSON Schema Compliance</span>
+            </div>
+            
+            <pre class="bg-slate-950 p-4 rounded-lg border border-slate-800 text-xs font-mono text-slate-300 overflow-x-auto leading-relaxed">
+case_id,deletion_status,steps_json
+case_001,COMPLETE,"[{""step_no"": 1, ""phase"": ""VERIFICATION"", ""system_id"": ""account_service"", ""resource_id"": ""account_001"", ""operation"": ""VERIFY_RECORD_ABSENT"", ""state"": ""ABSENT"", ""evidence_id"": ""evidence_01""}]"
+case_002,INCOMPLETE,"[{""step_no"": 1, ""phase"": ""FINDING"", ""system_id"": ""support_service"", ""resource_id"": ""ticket_002"", ""operation"": ""REPORT_EXPOSED_PII"", ""state"": ""PRESENT"", ""evidence_id"": ""evidence_02""}, {""step_no"": 2, ""phase"": ""REMEDIATION"", ""system_id"": ""support_service"", ""resource_id"": ""ticket_002"", ""operation"": ""REDACT_RECORD"", ""state"": ""REDACTED"", ""evidence_id"": "" font-mono""}, {""step_no"": 3, ""phase"": ""VERIFICATION"", ""system_id"": ""support_service"", ""resource_id"": ""ticket_002"", ""operation"": ""VERIFY_RECORD_REDACTED"", ""state"": ""REDACTED"", ""evidence_id"": "" font-mono""}]"
+case_003,NOT_APPLICABLE,"[]"</pre>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-800 bg-slate-950 py-6 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-4">
+            <p>&copy; 2026 Northstar Shop Inc. AI Deletion Audit Suite. All rights reserved.</p>
+            <div class="flex items-center space-x-4">
+                <span>Evaluation Pipeline Active</span>
+                <span>•</span>
+                <span>HackerRank Platform Ready</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Initialize Lucide Icons -->
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>
